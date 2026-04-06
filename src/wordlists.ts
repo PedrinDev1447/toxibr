@@ -120,7 +120,7 @@ export const HARD_BLOCKED: string[] = [
   'porno', 'pornozao', 'pornografia',
   'nude', 'nudes',
   'chupar pau', 'chupar pica',
-  'gozar', 'gozada', 'gozadas',
+  'gozar', 'gozada', 'gozadas', 'gozei', 'gozou', 'gozaram',
   'foder', 'fudendo', 'fudido',
   'transar', 'transando', 'transa',
   'piroca', 'pirocao', 'pirocas', 'pirocudo',
