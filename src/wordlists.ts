@@ -207,6 +207,14 @@ export const HARD_BLOCKED: string[] = [
   'mexendo nas bolas', 'mexer nas bolas',
   'no pau dele', 'no pau dela',
   'nas bolas dele',
+  'bafo de pica',
+  'boca cheia de leite', 'boca de leite', 'boca cheia de porra',
+  'encheu a boca', 'encher a boca',
+  'tacou dentro', 'tacar dentro', 'taquei dentro',
+  'no pelo', 'sem camisinha',
+  'botei ela pra trabalhar', 'botar ela pra trabalhar',
+  'mamou muito', 'mamou gostoso',
+  'leite na boca', 'joguei o leite', 'jogou o leite',
   'pau gostoso', 'pau grosso', 'pau grande',
   'ta duro', 'ta dura', 'ficou duro', 'ficou dura',
   'deixar o oco', 'deixar um oco', 'ficar um oco',
@@ -457,12 +465,13 @@ export const SEXUAL_SEED_WORDS: string[] = [
   'pau', 'pica', 'rola', 'cu', 'rabo', 'bola', 'bolas', 'saco',
   'peito', 'peitos', 'bunda', 'teta', 'mamilo', 'mamilos',
   // Fluidos / acao
-  'leite', 'porra', 'gozar', 'gozei', 'gozou', 'jato',
+  'leite', 'porra', 'pora', 'gozar', 'gozei', 'gozou', 'jato',
   'molhada', 'molhado', 'duro', 'dura', 'durinho',
   // Verbos sexuais
-  'chupar', 'lamber', 'mamar', 'meter', 'enfiar', 'socar',
+  'chupar', 'lamber', 'mamar', 'mamou', 'mamando', 'meter', 'enfiar', 'socar',
   'sentar', 'rebolar', 'quicar', 'cavalgar',
   'gemer', 'gritar', 'arregacar',
+  'tacar', 'tacou', 'jogar', 'jogou',
   // Contexto
   'gostoso', 'gostosa', 'delicia', 'tesao',
   'pelado', 'pelada', 'nu', 'nua',
@@ -470,6 +479,9 @@ export const SEXUAL_SEED_WORDS: string[] = [
   'explodir', 'lotado', 'cheio', 'cheia',
   'veiudo', 'grosso', 'enorme', 'grande',
   'cuspir', 'engolir',
+  // Partes do corpo / contexto adicional
+  'boca', 'dentro', 'pelo', 'gordinha',
+  'bafo',
 ];
 
 /** Padrões que indicam fala dirigida a outra pessoa (2ª pessoa). */
