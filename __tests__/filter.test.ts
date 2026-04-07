@@ -1,3 +1,4 @@
+import { describe, it, expect, test } from '@jest/globals';
 import {
   filterContent,
   normalize,
@@ -878,5 +879,154 @@ describe('filterBatch', () => {
     const results = batch(['http://example.com', 'seu idiota']);
     expect(results[0].allowed).toBe(true);
     expect(results[1].allowed).toBe(false);
+  });
+});
+
+// ─── Issue #37 — Bypass com números não-leet e emojis ────────────────────────
+
+describe('Issue #37 — numeric bypass (digits 2, 6, 8, 9 as separators)', () => {
+  describe('bypass bloqueado', () => {
+    it('blocks v2ado (viado com 2)', () => {
+      const result = filterContent('v2ado');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks vi6do (viado com 6)', () => {
+      const result = filterContent('vi6do');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks pu9a (puta com 9)', () => {
+      const result = filterContent('pu9a');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks bu6eta (buceta com 6)', () => {
+      const result = filterContent('bu6eta');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks vi8do (viado com 8)', () => {
+      const result = filterContent('vi8do');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks pu2ta (puta com 2)', () => {
+      const result = filterContent('pu2ta');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+  });
+
+  describe('falsos positivos numéricos — devem passar (CONTENT CLEAN)', () => {
+    it('allows ps5 (console)', () => {
+      expect(filterContent('comprei um ps5').allowed).toBe(true);
+    });
+
+    it('allows b2b (business to business)', () => {
+      expect(filterContent('estrategia b2b').allowed).toBe(true);
+    });
+
+    it('allows 2x1 (promoção)', () => {
+      expect(filterContent('oferta 2x1').allowed).toBe(true);
+    });
+
+    it('allows h2o (química)', () => {
+      expect(filterContent('beba h2o').allowed).toBe(true);
+    });
+
+    it('allows co2 (dióxido de carbono)', () => {
+      expect(filterContent('emissoes de co2').allowed).toBe(true);
+    });
+  });
+});
+
+describe('Issue #37 — emoji bypass (emojis como separadores dentro de palavras)', () => {
+  describe('bypass bloqueado', () => {
+    it('blocks v🍑ado (viado com emoji pêssego)', () => {
+      const result = filterContent('v🍑ado');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks pu🍑ta (puta com emoji pêssego)', () => {
+      const result = filterContent('pu🍑ta');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks vi🍆do (viado com emoji berinjela)', () => {
+      const result = filterContent('vi🍆do');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks bu🌸eta (buceta com emoji flor)', () => {
+      const result = filterContent('bu🌸eta');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+
+    it('blocks ar💢ombado (arrombado com emoji)', () => {
+      const result = filterContent('ar💢ombado');
+      expect(result.allowed).toBe(false);
+      if (!result.allowed) expect(result.reason).toBe('hard_block');
+    });
+  });
+
+  describe('falsos positivos com emojis — devem passar (CONTENT CLEAN)', () => {
+    it('allows "valeu! 😊" (emoji no final da frase)', () => {
+      expect(filterContent('valeu! 😊').allowed).toBe(true);
+    });
+
+    it('allows "boa noite 🌙" (emoji separado do texto)', () => {
+      expect(filterContent('boa noite 🌙').allowed).toBe(true);
+    });
+
+    it('allows "oi! 😊👋" (emojis após pontuação)', () => {
+      expect(filterContent('oi! 😊👋').allowed).toBe(true);
+    });
+
+    it('allows "parabéns! 🎉🎂" (emojis festivos)', () => {
+      expect(filterContent('parabéns! 🎉🎂').allowed).toBe(true);
+    });
+
+    it('allows emoji with only 1 letter on each side (a😊b — não é bypass)', () => {
+      // Apenas 1 letra em cada lado do emoji — não atinge o limite de 2 letras
+      expect(filterContent('a😊b').allowed).toBe(true);
+    });
+  });
+});
+
+describe('Issue #37 — leetspeak legítimo (0, 1, 3, 4, 5, 7) continua funcionando via Layer de tradução', () => {
+  it('blocks 3stupr0 (estupro com leet 3→e, 0→o)', () => {
+    const result = filterContent('3stupr0');
+    expect(result.allowed).toBe(false);
+  });
+
+  it('blocks v14do (viado com leet 1→i, 4→a)', () => {
+    const result = filterContent('v14do');
+    expect(result.allowed).toBe(false);
+  });
+
+  it('blocks 3stup4dor (estuprador com leet)', () => {
+    const result = filterContent('3stup4dor');
+    expect(result.allowed).toBe(false);
+  });
+
+  it('blocks bu53t4 (buceta com leet 5→s, 3→e, 4→a)', () => {
+    const result = filterContent('bu53t4');
+    expect(result.allowed).toBe(false);
+  });
+
+  it('normalize translates leet digits correctly', () => {
+    expect(normalize('v14do')).toContain('viado');
+    expect(normalize('3stupr0')).toContain('estupr');
+    expect(normalize('bu53t4')).toContain('buseta');
   });
 });

@@ -346,8 +346,18 @@ export function createFilter(options: ToxiBROptions = {}) {
   return function filterContent(text: string): FilterResult {
     const normalized = normalize(text);
 
-    // Layer 0: Censorship bypass detection — words with * or # between letters
-    if (/\w[*#]+\w/.test(text)) {
+    // Layer 0: Censorship bypass detection
+    // * or # between any two letters (p*ta, v#ado)
+    // Non-leet digits 2,6,8,9 used as separators — require ≥2 letters on at
+    // least one side so that technical terms like b2b / ps5 / 2x1 are allowed.
+    // Emojis used as separators within a word (v🍑ado) — same ≥2-letter rule.
+    const _emojiSepRe =
+      /[a-zA-Z]{2,}\p{Extended_Pictographic}[a-zA-Z]|[a-zA-Z]\p{Extended_Pictographic}[a-zA-Z]{2,}/u;
+    if (
+      /[a-zA-Z][*#]+[a-zA-Z]/.test(text) ||
+      /[a-zA-Z]{2,}[2689]+[a-zA-Z]|[a-zA-Z][2689]+[a-zA-Z]{2,}/.test(text) ||
+      _emojiSepRe.test(text)
+    ) {
       return makeResult('hard_block', 'censorship bypass');
     }
 
