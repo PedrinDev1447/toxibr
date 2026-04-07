@@ -1,7 +1,15 @@
 // ─── ToxiBR ──────────────────────────────────────────────────────────────────
 // Biblioteca de moderação de conteúdo para português brasileiro.
 
-export { filterContent, createFilter, censorContent, createCensor, normalize } from './filter';
+export {
+  filterContent,
+  createFilter,
+  filterBatch,
+  createFilterBatch,
+  censorContent,
+  createCensor,
+  normalize,
+} from './filter';
 export type {
   FilterResult,
   FilterReason,

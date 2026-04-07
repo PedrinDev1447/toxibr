@@ -611,6 +611,15 @@ export function createCensor(options: ToxiBROptions = {}) {
 
 export const censorContent = createCensor();
 
+// ─── Batch filtering ─────────────────────────────────────────────────────────
+
+export function createFilterBatch(options: ToxiBROptions = {}) {
+  const filter = createFilter(options);
+  return (messages: string[]): FilterResult[] => messages.map(filter);
+}
+
+export const filterBatch = createFilterBatch();
+
 // ─── Default filter (zero config) ────────────────────────────────────────────
 
 export const filterContent = createFilter();

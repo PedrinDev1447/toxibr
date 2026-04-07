@@ -1,4 +1,10 @@
-import { filterContent, normalize, createFilter } from '../src/filter';
+import {
+  filterContent,
+  normalize,
+  createFilter,
+  filterBatch,
+  createFilterBatch,
+} from '../src/filter';
 
 // ─── Normalization ───────────────────────────────────────────────────────────
 
@@ -820,5 +826,45 @@ describe('severity levels', () => {
       expect(r.reason).toBe('suspicious_content');
       expect(r.severity).toBe('flag');
     }
+  });
+});
+
+// ─── Batch filtering ─────────────────────────────────────────────────────────
+
+describe('filterBatch', () => {
+  it('returns one result per message', () => {
+    const results = filterBatch(['oi', 'tudo bem', 'hello']);
+    expect(results).toHaveLength(3);
+    results.forEach((r) => expect(r.allowed).toBe(true));
+  });
+
+  it('correctly filters mixed allowed/blocked messages', () => {
+    const results = filterBatch(['bom dia', 'seu idiota', 'tudo certo']);
+    expect(results).toHaveLength(3);
+    expect(results[0].allowed).toBe(true);
+    expect(results[1].allowed).toBe(false);
+    if (!results[1].allowed) {
+      expect(results[1].reason).toBe('directed_insult');
+    }
+    expect(results[2].allowed).toBe(true);
+  });
+
+  it('returns empty array for empty input', () => {
+    const results = filterBatch([]);
+    expect(results).toEqual([]);
+  });
+
+  it('produces same results as individual filterContent calls', () => {
+    const messages = ['oi amigo', 'vai tomar no cu', 'boa tarde', 'fdp'];
+    const batchResults = filterBatch(messages);
+    const individualResults = messages.map(filterContent);
+    expect(batchResults).toEqual(individualResults);
+  });
+
+  it('works with createFilterBatch and custom options', () => {
+    const batch = createFilterBatch({ blockLinks: false });
+    const results = batch(['http://example.com', 'seu idiota']);
+    expect(results[0].allowed).toBe(true);
+    expect(results[1].allowed).toBe(false);
   });
 });
