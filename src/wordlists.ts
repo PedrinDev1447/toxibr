@@ -195,7 +195,7 @@ export const HARD_BLOCKED: string[] = [
   'porno', 'pornozao', 'pornografia',
   'nude', 'nudes',
   'chupar pau', 'chupar pica', 'engole o pau', 'engolir o pau',
-  'chupadora', 'entra e sai', 'socar gostoso',
+  'entra e sai', 'socar gostoso',
   'sentei no pau', 'sentando no pau', 'sentar no pau',
   'rebolei', 'rebolando', 'rebolar', 'rebolou',
   'quiquei', 'quicando', 'quicar', 'quicou',
