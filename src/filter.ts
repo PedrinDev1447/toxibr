@@ -122,6 +122,7 @@ const FUZZY_ALLOWLIST = new Set([
   'plsos',  // typo de pulsos
   'chorando', 'chorado',  // fuzzy matches chupando
   'conteudo', 'cotneudo', // fuzzy matches cornudo
+  'estourar', 'estourou', 'estouro', // fuzzy matches estuprar
   'mamae', 'mamada',  // mamae gets fuzzy-matched to mamada incorrectly
 ]);
 
@@ -144,7 +145,9 @@ function buildRegexes(words: string[]): { word: string; regex: RegExp }[] {
 // ─── Phone number regex (Brazilian formats) ──────────────────────────────────
 
 const PHONE_REGEX = /(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?\d{4,5}[\s.-]?\d{4}/;
+const PHONE_REGEX_G = /(?:\+?55\s?)?(?:\(?\d{2}\)?\s?)?\d{4,5}[\s.-]?\d{4}/g;
 const LINK_REGEX = /https?:\/\/|www\.|\.com|\.net|\.org|\.br|\.io|\.me|\.tv|\.co|\.link|\.xyz/i;
+const LINK_REPLACE_REGEX = /(?:https?:\/\/\S+|www\.\S+|\S+\.(?:com|net|org|br|io|me|tv|co|link|xyz)\S*)/gi;
 
 // ─── Create filter instance ──────────────────────────────────────────────────
 
@@ -342,26 +345,47 @@ export function createFilter(options: ToxiBROptions = {}) {
 export function createCensor(options: ToxiBROptions = {}) {
   const filter = createFilter(options);
   const char = options.censorChar ?? '*';
+  const censorPhones = options.censorPhones ?? false;
+  const censorLinks = options.censorLinks ?? false;
 
   return function censorContent(text: string): CensorResult {
-    // First check the full message for non-word-level blocks
-    const fullResult = filter(text);
+    let workingText = text;
+    const matches: CensorResult['matches'] = [];
 
-    // If blocked by link, phone, or digits_only — censor entire message
-    if (!fullResult.allowed && ['link', 'phone', 'digits_only'].includes(fullResult.reason)) {
-      return {
-        censored: char.repeat(text.length),
-        hasToxicContent: true,
-        matches: [{ word: text, reason: fullResult.reason, matched: fullResult.matched }],
-      };
+    // Step 1: Censor phones inline (replace with ***) if enabled
+    if (censorPhones && PHONE_REGEX.test(workingText)) {
+      workingText = workingText.replace(PHONE_REGEX_G, (m) => {
+        matches.push({ word: m, reason: 'phone', matched: 'telefone' });
+        return char.repeat(m.length);
+      });
     }
 
-    const words = text.split(/(\s+)/); // keep whitespace tokens
-    const matches: CensorResult['matches'] = [];
+    // Step 2: Censor links inline if enabled
+    if (censorLinks && LINK_REGEX.test(text)) {
+      workingText = workingText.replace(LINK_REPLACE_REGEX, (m) => {
+        matches.push({ word: m, reason: 'link', matched: 'link' });
+        return char.repeat(m.length);
+      });
+    }
+
+    // Step 3: Check full message for non-word-level blocks (if not censoring inline)
+    if (!censorPhones || !censorLinks) {
+      const fullResult = filter(workingText);
+      if (!fullResult.allowed && ['link', 'phone', 'digits_only'].includes(fullResult.reason)) {
+        return {
+          censored: char.repeat(text.length),
+          hasToxicContent: true,
+          matches: [{ word: text, reason: fullResult.reason, matched: fullResult.matched }],
+        };
+      }
+    }
+
+    // Step 4: Censor toxic words
+    const words = workingText.split(/(\s+)/);
     const censored: string[] = [];
 
     // Scan multi-word phrases first (n-grams: 2, 3, 4)
-    const phraseBlocked = new Set<number>(); // indices of tokens that are part of a blocked phrase
+    const phraseBlocked = new Set<number>();
 
     const nonSpaceIndices: number[] = [];
     words.forEach((w, i) => { if (w.trim()) nonSpaceIndices.push(i); });
@@ -381,25 +405,21 @@ export function createCensor(options: ToxiBROptions = {}) {
       }
     }
 
-    // Now process each token
     for (let i = 0; i < words.length; i++) {
       const token = words[i];
 
-      // Whitespace — keep as-is
       if (!token.trim()) {
         censored.push(token);
         continue;
       }
 
-      // Part of a blocked phrase — censor
       if (phraseBlocked.has(i)) {
         censored.push(char.repeat(token.length));
         continue;
       }
 
-      // Single word scan (ignore digits_only and phone for individual words)
       const res = filter(token);
-      if (!res.allowed && !['digits_only', 'phone'].includes(res.reason)) {
+      if (!res.allowed && !['digits_only', 'phone', 'link'].includes(res.reason)) {
         censored.push(char.repeat(token.length));
         matches.push({ word: token, reason: res.reason, matched: res.matched });
       } else {

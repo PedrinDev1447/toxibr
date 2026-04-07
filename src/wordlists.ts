@@ -120,7 +120,7 @@ export const HARD_BLOCKED: string[] = [
   'comer um cu', 'cu apertadinho', 'cu apertado',
   'arrombar ela', 'arrombei toda', 'arrombar toda',
   'arrombar esse', 'arrombar teu', 'arrombar seu', 'arrombar o teu', 'arrombar o seu',
-  'vou arrombar',
+  'vou arrombar', 'adoro arrombar', 'arrombar um',
   'pegar de 4', 'mulher de 4', 'colocar de 4',
   'entro com a pica', 'mete a pica', 'meter a pica',
   'enfia o meninao', 'meter o meninao', 'mete o meninao',
@@ -148,6 +148,12 @@ export const HARD_BLOCKED: string[] = [
   // ── Pedofilia / grooming ──
   'pedo', 'p3do', 'epstein',
   'menininha', 'garotinha',
+  'tirar um cabaco', 'cabaco', 'cabacinho',
+  'cabacinho de novinha',
+  'novinha', 'novinhas',
+
+  // ── Abreviacoes sexuais ──
+  'd4',  // de 4 (posicao sexual)
 
   // ── Atrizes porno BR ──
   'bruna surfistinha', 'andressa urach', 'elisa sanches',
@@ -309,7 +315,6 @@ export const CONTEXT_SENSITIVE: string[] = [
   'escravo', 'escrava',
   'submissa', 'submisso',
   'mulher moderna',
-  'novinha',
   'inocente',
   'pequena',
   // Movidos de hard-block (falsos positivos comuns em PT-BR)

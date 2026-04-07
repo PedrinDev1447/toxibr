@@ -28,4 +28,8 @@ export interface ToxiBROptions {
   blockEmojis?: boolean;
   /** Character used for censoring. Default: '*' */
   censorChar?: string;
+  /** Censor phone numbers instead of blocking. Default: false */
+  censorPhones?: boolean;
+  /** Censor links instead of blocking. Default: false */
+  censorLinks?: boolean;
 }
