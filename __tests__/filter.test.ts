@@ -82,6 +82,16 @@ describe('hard-blocked words', () => {
   });
 });
 
+// ─── Racismo ─────────────────────────────────────────────────────────────────
+
+describe('hard-blocked — racism terms', () => {
+  it('blocks "mascote de petrolífera"', () => {
+    const result = filterContent('aquele cara é mascote de petrolífera');
+    expect(result.allowed).toBe(false);
+    if (!result.allowed) expect(result.reason).toBe('hard_block');
+  });
+});
+
 // ─── New slurs added in v2 ───────────────────────────────────────────────────
 
 describe('hard-blocked — new slurs (v2)', () => {
