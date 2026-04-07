@@ -252,6 +252,22 @@ const FUZZY_ALLOWLIST = new Set([
   'jogo', // fuzzy matches jorrou
   'mamae',
   'mamada', // mamae gets fuzzy-matched to mamada incorrectly
+  // Common words that fuzzy-match sexual/offensive terms
+  'certinho',
+  'certinha', // → peitinho
+  'chamando', // → chupando
+  'camilo', // → mamilo
+  'corpo', // → corno
+  'corpos', // → cornos
+  'pela',
+  'pelas', // → pelada
+  'sapato',
+  'sapatos', // → sapata
+  'mensagem',
+  'mensagens', // → menage
+  'torno', // → corno
+  'ponta',
+  'pontas', // → phnta
 ]);
 
 // ─── Escape regex special chars ──────────────────────────────────────────────
@@ -422,7 +438,7 @@ export function createFilter(options: ToxiBROptions = {}) {
       const messageWords = normalized.split(/\s+/);
       for (const msgWord of messageWords) {
         // Word must be at least 4 chars and cover at least 70% of a blocked word
-        if (msgWord.length < 4) continue;
+        if (msgWord.length < 4 || FUZZY_ALLOWLIST.has(msgWord)) continue;
         for (const blocked of prefixWords) {
           if (blocked.length < msgWord.length) continue;
           if (blocked.startsWith(msgWord) && msgWord.length >= blocked.length * 0.55) {

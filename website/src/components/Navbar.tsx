@@ -1,22 +1,61 @@
-import './Navbar.css'
+import type { Page } from '../App';
+import './Navbar.css';
 
-export default function Navbar() {
+interface NavbarProps {
+  currentPage: Page;
+  onNavigate: (page: Page) => void;
+}
+
+export default function Navbar({ currentPage, onNavigate }: NavbarProps) {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <a href="/" className="nav-brand">
+        <button
+          className="nav-brand"
+          onClick={() => {
+            onNavigate('home');
+            window.scrollTo(0, 0);
+          }}
+        >
           <span className="nav-logo">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
           </span>
           Toxi<span className="nav-brand-accent">BR</span>
-          <span className="nav-brand-sub">Moderacao de Chat</span>
-        </a>
+          <span className="nav-brand-sub">Moderação de Chat</span>
+        </button>
         <div className="nav-links">
-          <a href="#como-usar">Como usar</a>
-          <a href="https://www.npmjs.com/package/toxibr" target="_blank" rel="noopener">npm</a>
-          <a href="https://github.com/Diaum/toxibr/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">Contribuir</a>
+          <button
+            className={`nav-link-btn ${currentPage === 'home' ? 'active' : ''}`}
+            onClick={() => {
+              onNavigate('home');
+              window.scrollTo(0, 0);
+            }}
+          >
+            Playground
+          </button>
+          <button
+            className={`nav-link-btn ${currentPage === 'como-usar' ? 'active' : ''}`}
+            onClick={() => {
+              onNavigate('como-usar');
+              window.scrollTo(0, 0);
+            }}
+          >
+            Como usar
+          </button>
+          <a href="https://www.npmjs.com/package/toxibr" target="_blank" rel="noopener">
+            npm
+          </a>
           <a
             href="https://github.com/Diaum/toxibr"
             target="_blank"
@@ -31,5 +70,5 @@ export default function Navbar() {
         </div>
       </div>
     </nav>
-  )
+  );
 }
