@@ -11,3 +11,9 @@ dist
 coverage/
 
 .vercel
+.claude/
+.maestro/
+maestro-state.json
+maestro-state.json.tmp
+maestro.toml
+tmp_prd2.txt
