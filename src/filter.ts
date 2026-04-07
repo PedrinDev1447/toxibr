@@ -251,6 +251,8 @@ const FUZZY_ALLOWLIST = new Set([
   'jogos',
   'jogo', // fuzzy matches jorrou
   'cama', // prefix matches cam4
+  'video',
+  'videos', // fuzzy matches xvideos
   'mamae',
   'mamada', // mamae gets fuzzy-matched to mamada incorrectly
   // Common words that fuzzy-match sexual/offensive terms
