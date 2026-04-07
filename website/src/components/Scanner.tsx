@@ -40,9 +40,9 @@ export default function Scanner({ onScan, onReset }: ScannerProps) {
           value={text}
           onChange={e => { setText(e.target.value); onScan(e.target.value) }}
           placeholder="Digite uma mensagem aqui..."
-          maxLength={350}
+          maxLength={1000}
         />
-        <span className="scanner-count">{text.length}/350</span>
+        <span className="scanner-count">{text.length}/1000</span>
       </div>
 
       <div className="scanner-actions">
