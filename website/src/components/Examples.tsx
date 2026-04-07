@@ -26,16 +26,6 @@ const examples = [
     type: 'safe' as const,
   },
   {
-    text: 'acordei com o pau veiudo saco lotado de tanto leite',
-    label: 'Seed density (palavras ambíguas)',
-    type: 'toxic' as const,
-  },
-  {
-    text: 'ela engolia tudo, mamou muito, joguei o leite na boca dela',
-    label: 'Narrativa sexual longa',
-    type: 'toxic' as const,
-  },
-  {
     text: 'caralho tiozao tu ta de brincadeira, voce e um lixo cara',
     label: 'Insulto + exclamação misturados',
     type: 'toxic' as const,
