@@ -110,7 +110,7 @@ export default function FalsePositivePanel({
       title = `[Nao capturado] ${missedEntries.length} palavra(s)/frase(s) reportada(s)`;
     }
 
-    const labels = [hasFP ? 'false-positive' : '', hasMissed ? 'wordlist' : '']
+    const labels = ['bug', hasFP ? 'false-positive' : '', hasMissed ? 'wordlist' : '']
       .filter(Boolean)
       .join(',');
     const url = `https://github.com/Diaum/toxibr/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(sections.join('\n'))}&labels=${encodeURIComponent(labels)}`;
